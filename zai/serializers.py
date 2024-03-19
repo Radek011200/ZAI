@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from main.models import Film, ExtraInfo
+from django.contrib.auth.models import User
 
 class FilmSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
@@ -25,7 +26,7 @@ class FilmSerializer(serializers.Serializer):
 class FilmModelSerializer(serializers.ModelSerializer):
         class Meta:
             model = Film
-            fields = ['id', 'tytul', 'rok', 'opis', 'premiera', 'imdb_points']
+            fields = '__all__'
 
         def create(self, validated_data):
             return Film.objects.create(**validated_data)
