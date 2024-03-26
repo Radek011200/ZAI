@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from main.views import wszystkie, szczegoly, nowy, edycja, usun
-from film.views import FilmList, FilmRetrieve, FilmCreateList
+# from film.views import FilmList, FilmRetrieve, FilmCreateList
 
 urlpatterns = [
     path('admin/', admin.site.urls),
