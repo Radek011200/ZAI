@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from main.views import wszystkie, szczegoly, nowy, edycja, usun
 # from film.views import FilmList, FilmRetrieve, FilmCreateList
+from main.views import api_root
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +27,6 @@ urlpatterns = [
     path('nowy/', nowy),
     path('edycja/<int:film_id>/', edycja),
     path('usun/<int:film_id>/', usun),
-    path('filmy/', include('film.urls'))
+    path('filmy/', include('film.urls')),
+    path('', api_root)
 ]
