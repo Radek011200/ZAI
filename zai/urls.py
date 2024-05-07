@@ -19,8 +19,11 @@ from django.urls import path, include
 from main.views import wszystkie, szczegoly, nowy, edycja, usun
 # from film.views import FilmList, FilmRetrieve, FilmCreateList
 from main.views import api_root
+from graphene_django.views import GraphQLView
+from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
+    path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True))),
     path('admin/', admin.site.urls),
     path('wszystkie/', wszystkie),
     path('szczegoly/<int:film_id>/', szczegoly),

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'graphene_django',
     'rest_framework',
     'film',
     'main',
@@ -136,4 +137,8 @@ REST_FRAMEWORK = {
     # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 1
+}
+
+GRAPHENE = {
+    "SCHEMA": "film.schema.schema"
 }
