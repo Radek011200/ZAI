@@ -1,7 +1,9 @@
 import graphene
+from django.db.models import Count
 from graphene_django import DjangoObjectType
 from django.contrib.auth.models import User
 from .models import Film, ExtraInfo, Ocena, Aktor
+import graphql_jwt
 
 #
 # Typy
@@ -52,21 +54,30 @@ class Query(graphene.ObjectType):
     aktorzy = graphene.List(AktorType, filters=Filters())
 
     def resolve_filmy(root, info, filters):
-        filmy = Film.objects.all()
-        for f in filmy:
-            if f.rok < filters.rok_mniejszy_od:
-                f.stary_nowy_film = "Stary film"
-            else:
-                f.stary_nowy_film = "Nowy film"
-        if len(filters.tytul_zawiera) > 0:
-            films = Film.objects.filter(tytul__contains=filters.tytul_zawiera)
-            for f in films:
-                if f.rok < filters.rok_mniejszy_od:
-                    f.stary_nowy_film = "Stary film"
-                else:
-                    f.stary_nowy_film = "Nowy film"
-            return films
+        user = info.context.user
+        if not user.is_authenticated:
+            raise Exception('Nie dostarczono danych uwierzytelniających')
+        filmy = Film.objects.all().annotate(l_count = Count("id"))
+        if filters is not None:
+            f = Film.objects.filter(tytul__contains=filters.tytul_contains).annotate(l_count = Count("id"))
+            return f
         return filmy
+
+        # filmy = Film.objects.all()
+        # for f in filmy:
+        #     if f.rok < filters.rok_mniejszy_od:
+        #         f.stary_nowy_film = "Stary film"
+        #     else:
+        #         f.stary_nowy_film = "Nowy film"
+        # if len(filters.tytul_zawiera) > 0:
+        #     films = Film.objects.filter(tytul__contains=filters.tytul_zawiera)
+        #     for f in films:
+        #         if f.rok < filters.rok_mniejszy_od:
+        #             f.stary_nowy_film = "Stary film"
+        #         else:
+        #             f.stary_nowy_film = "Nowy film"
+        #     return films
+        # return filmy
 
 
     def resolve_aktorzy(root, info, filters):
@@ -168,6 +179,9 @@ class Mutation(graphene.ObjectType):
     create_film = FilmCreateMutation.Field()
     update_film = FilmUpdateMutation.Field()
     delete_film = FilmDeleteMutation.Field()
+    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    verify_token = graphql_jwt.Verify.Field()
+    refresh_token = graphql_jwt.Refresh.Field()
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
 
